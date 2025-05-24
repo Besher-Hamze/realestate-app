@@ -10,14 +10,15 @@ class AuthRepository {
 
   Future<LoginResponse> login(LoginRequest request) async {
     try {
-
       final response = await _apiProvider.post('/api/auth/login', data: request.toJson());
-      if (response.statusCode==200) {
+      if (response.statusCode == 200) {
         final loginResponse = LoginResponse.fromJson(response.data);
         // Save auth data to storage
         await _storage.write('token', loginResponse.token);
         await _storage.write('userId', loginResponse.userId);
-        await _storage.write('username', loginResponse.username);
+        if (loginResponse.refreshToken != null) {
+          await _storage.write('refreshToken', loginResponse.refreshToken);
+        }
         await _storage.write('expiration', loginResponse.expiration.toIso8601String());
         return loginResponse;
       } else {
@@ -103,6 +104,75 @@ class AuthRepository {
   }
 
   String? getUsername() {
-    return _storage.read('username');
+    return null; // Username is no longer stored
+  }
+
+  // Phone verification methods
+  Future<VerificationResponse> verifyPhone(VerifyPhoneRequest request) async {
+    try {
+      final response = await _apiProvider.post('/api/auth/verify-phone', data: request.toJson());
+      if (response.statusCode == 200) {
+        return VerificationResponse.fromJson(response.data);
+      } else {
+        throw response.data['message'] ?? 'فشل تأكيد رقم الهاتف';
+      }
+    } catch (e) {
+      if (e is DioException) {
+        final errorMessage = e.response?.data?['message'] ?? 'فشل تأكيد رقم الهاتف';
+        throw errorMessage;
+      }
+      throw e.toString();
+    }
+  }
+
+  Future<VerificationResponse> sendVerificationCode(SendVerificationCodeRequest request) async {
+    try {
+      final response = await _apiProvider.post('/api/auth/send-verification-code', data: request.toJson());
+      if (response.statusCode == 200) {
+        return VerificationResponse.fromJson(response.data);
+      } else {
+        throw response.data['message'] ?? 'فشل إرسال رمز التأكيد';
+      }
+    } catch (e) {
+      if (e is DioException) {
+        final errorMessage = e.response?.data?['message'] ?? 'فشل إرسال رمز التأكيد';
+        throw errorMessage;
+      }
+      throw e.toString();
+    }
+  }
+
+  Future<VerificationResponse> forgotPassword(ForgotPasswordRequest request) async {
+    try {
+      final response = await _apiProvider.post('/api/auth/forgot-password', data: request.toJson());
+      if (response.statusCode == 200) {
+        return VerificationResponse.fromJson(response.data);
+      } else {
+        throw response.data['message'] ?? 'فشل طلب إعادة تعيين كلمة المرور';
+      }
+    } catch (e) {
+      if (e is DioException) {
+        final errorMessage = e.response?.data?['message'] ?? 'فشل طلب إعادة تعيين كلمة المرور';
+        throw errorMessage;
+      }
+      throw e.toString();
+    }
+  }
+
+  Future<VerificationResponse> resetPassword(ResetPasswordRequest request) async {
+    try {
+      final response = await _apiProvider.post('/api/auth/reset-password', data: request.toJson());
+      if (response.statusCode == 200) {
+        return VerificationResponse.fromJson(response.data);
+      } else {
+        throw response.data['message'] ?? 'فشل إعادة تعيين كلمة المرور';
+      }
+    } catch (e) {
+      if (e is DioException) {
+        final errorMessage = e.response?.data?['message'] ?? 'فشل إعادة تعيين كلمة المرور';
+        throw errorMessage;
+      }
+      throw e.toString();
+    }
   }
 }

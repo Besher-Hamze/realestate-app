@@ -164,33 +164,33 @@ class PropertyListView extends GetView<PropertyController> {
                       }
                     },
                   ),
-                  ...Constants.propertyTypes.map((type) {
-                    String label;
-                    switch (type) {
-                      case 'apartment':
-                        label = 'شقة';
-                        break;
-                      case 'villa':
-                        label = 'فيلا';
-                        break;
-                      case 'land':
-                        label = 'أرض';
-                        break;
-                      default:
-                        label = type;
-                    }
-                    return ChoiceChip(
-                      label: Text(label),
-                      selected: controller.selectedPropertyType.value == type,
-                      onSelected: (selected) {
-                        if (selected) {
-                          controller.selectedPropertyType.value = type;
-                        } else {
-                          controller.selectedPropertyType.value = null;
-                        }
-                      },
-                    );
-                  }),
+                  // ...Constants.propertyTypes.map((type) {
+                  //   String label;
+                  //   switch (type) {
+                  //     case 'apartment':
+                  //       label = 'شقة';
+                  //       break;
+                  //     case 'villa':
+                  //       label = 'فيلا';
+                  //       break;
+                  //     case 'land':
+                  //       label = 'أرض';
+                  //       break;
+                  //     default:
+                  //       label = type;
+                  //   }
+                  //   return ChoiceChip(
+                  //     label: Text(label),
+                  //     selected: controller.selectedPropertyType.value == type,
+                  //     onSelected: (selected) {
+                  //       if (selected) {
+                  //         controller.selectedPropertyType.value = type;
+                  //       } else {
+                  //         controller.selectedPropertyType.value = null;
+                  //       }
+                  //     },
+                  //   );
+                  // }),
                 ],
               ),
               const SizedBox(height: 16),

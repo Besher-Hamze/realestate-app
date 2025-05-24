@@ -26,7 +26,7 @@ class HomeController extends GetxController {
   final pageController = PageController();
 
   // Quick filters
-  final selectedPropertyType = Rxn<String>();
+  final selectedPropertyType = Rxn<int>();
   final selectedLocation = Rxn<String>();
   final selectedPriceRange = Rxn<Map<String, dynamic>>();
 
@@ -166,6 +166,15 @@ class HomeController extends GetxController {
   void navigateToProfile() {
     if (isLoggedIn()) {
       Get.toNamed(Routes.PROFILE);
+    } else {
+      Get.toNamed(Routes.LOGIN);
+    }
+  }
+
+  // Navigate to create property
+  void navigateToCreateProperty() {
+    if (isLoggedIn()) {
+      Get.toNamed(Routes.CREATE_PROPERTY);
     } else {
       Get.toNamed(Routes.LOGIN);
     }

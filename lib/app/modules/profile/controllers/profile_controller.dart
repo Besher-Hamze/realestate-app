@@ -133,7 +133,7 @@ class ProfileController extends GetxController {
       final request = ChangePasswordRequest(
         currentPassword: currentPasswordController.text,
         newPassword: newPasswordController.text,
-        confirmPassword: confirmPasswordController.text,
+        confirmNewPassword: confirmPasswordController.text,
       );
 
       final success = await _userRepository.changePassword(request);

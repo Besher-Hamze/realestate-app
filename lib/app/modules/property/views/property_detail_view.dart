@@ -9,6 +9,8 @@ import 'package:real_estate_app/app/routes/app_pages.dart';
 import 'package:real_estate_app/app/utils/helpers.dart';
 import 'package:real_estate_app/app/utils/theme.dart';
 
+import '../../../utils/constants.dart';
+
 class PropertyDetailView extends GetView<PropertyController> {
   const PropertyDetailView({super.key});
 
@@ -515,7 +517,7 @@ class PropertyDetailView extends GetView<PropertyController> {
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                feature.name,
+                                feature,
                                 style: TextStyle(
                                   color: AppTheme.textColor.withOpacity(0.8),
                                   fontWeight: FontWeight.w500,
@@ -818,7 +820,7 @@ class PropertyDetailView extends GetView<PropertyController> {
                 children: [
                   // Image
                   CachedNetworkImage(
-                    imageUrl: image.url,
+                    imageUrl: "${Constants.baseUrl}/${image.url}",
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: 300,
@@ -919,7 +921,7 @@ class PropertyDetailView extends GetView<PropertyController> {
     return SizedBox(
       height: 300,
       child: CachedNetworkImage(
-        imageUrl: property.mainImageUrl,
+        imageUrl: "${Constants.baseUrl}/${property.mainImageUrl}",
         fit: BoxFit.cover,
         width: double.infinity,
         placeholder: (context, url) => Container(
@@ -1114,7 +1116,7 @@ class PropertyDetailView extends GetView<PropertyController> {
                         width: 60,
                         height: 60,
                         child: CachedNetworkImage(
-                          imageUrl: property.mainImageUrl,
+                          imageUrl: "${Constants.baseUrl}/${property.mainImageUrl}",
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
                             color: Colors.grey[300],
@@ -1177,9 +1179,9 @@ class PropertyDetailView extends GetView<PropertyController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Date selection
+                    // Date and Time selection
                     const Text(
-                      'تاريخ المعاينة',
+                      'تاريخ ووقت المعاينة',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -1189,9 +1191,9 @@ class PropertyDetailView extends GetView<PropertyController> {
                     Obx(() {
                       return InkWell(
                         onTap: () async {
-                          final DateTime? picked = await showDatePicker(
+                          final DateTime? pickedDate = await showDatePicker(
                             context: context,
-                            initialDate: bookingController.requestDate.value,
+                            initialDate: bookingController.visitDateTime.value,
                             firstDate: DateTime.now(),
                             lastDate: DateTime.now().add(const Duration(days: 90)),
                             builder: (context, child) {
@@ -1206,8 +1208,32 @@ class PropertyDetailView extends GetView<PropertyController> {
                             },
                           );
 
-                          if (picked != null) {
-                            bookingController.setBookingDate(picked);
+                          if (pickedDate != null) {
+                            final TimeOfDay? pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(bookingController.visitDateTime.value),
+                              builder: (context, child) {
+                                return Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: const ColorScheme.light(
+                                      primary: AppTheme.primaryColor,
+                                    ),
+                                  ),
+                                  child: child!,
+                                );
+                              },
+                            );
+
+                            if (pickedTime != null) {
+                              final selectedDateTime = DateTime(
+                                pickedDate.year,
+                                pickedDate.month,
+                                pickedDate.day,
+                                pickedTime.hour,
+                                pickedTime.minute,
+                              );
+                              bookingController.setVisitDateTime(selectedDateTime);
+                            }
                           }
                         },
                         child: Container(
@@ -1220,18 +1246,19 @@ class PropertyDetailView extends GetView<PropertyController> {
                           child: Row(
                             children: [
                               const Icon(
-                                Icons.calendar_today_rounded,
+                                Icons.event_rounded,
                                 color: AppTheme.primaryColor,
                                 size: 20,
                               ),
                               const SizedBox(width: 12),
-                              Text(
-                                Helpers.formatDate(bookingController.requestDate.value),
-                                style: const TextStyle(
-                                  fontSize: 15,
+                              Expanded(
+                                child: Text(
+                                  '${Helpers.formatDate(bookingController.visitDateTime.value)} - ${Helpers.formatTime(bookingController.visitDateTime.value)}',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                  ),
                                 ),
                               ),
-                              const Spacer(),
                               const Icon(
                                 Icons.arrow_drop_down,
                                 color: AppTheme.secondaryTextColor,

@@ -50,28 +50,7 @@ class RegisterView extends GetView<AuthController> {
                 : const SizedBox.shrink(),
             ),
 
-            // Username Field
-            TextFormField(
-              controller: controller.usernameController,
-              decoration: const InputDecoration(
-                labelText: 'اسم المستخدم',
-                hintText: 'أدخل اسم المستخدم',
-                prefixIcon: Icon(Icons.person_outline),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'الرجاء إدخال اسم المستخدم';
-                }
-                if (value.length < 3) {
-                  return 'اسم المستخدم يجب أن يكون 3 أحرف على الأقل';
-                }
-                return null;
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            // Full Name Field
+            // Full Name Field (moved to top)
             TextFormField(
               controller: controller.fullNameController,
               decoration: const InputDecoration(
@@ -89,7 +68,29 @@ class RegisterView extends GetView<AuthController> {
 
             const SizedBox(height: 16),
 
-            // Email Field
+            // Phone Field (second)
+            TextFormField(
+              controller: controller.phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(
+                labelText: 'رقم الهاتف',
+                hintText: 'أدخل رقم هاتفك',
+                prefixIcon: Icon(Icons.phone_outlined),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'الرجاء إدخال رقم الهاتف';
+                }
+                if (value.length < 10) {
+                  return 'رقم الهاتف يجب أن يكون 10 أرقام على الأقل';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 16),
+
+            // Email Field (third)
             TextFormField(
               controller: controller.emailController,
               keyboardType: TextInputType.emailAddress,
@@ -105,28 +106,6 @@ class RegisterView extends GetView<AuthController> {
                 if (!GetUtils.isEmail(value)) {
                   return 'الرجاء إدخال بريد إلكتروني صحيح';
                 }
-                return null;
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            // Phone Field
-            TextFormField(
-              controller: controller.phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: 'رقم الهاتف',
-                hintText: 'أدخل رقم هاتفك',
-                prefixIcon: Icon(Icons.phone_outlined),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'الرجاء إدخال رقم الهاتف';
-                }
-                // if (!RegExp(r'^05\d{8}$').hasMatch(value)) {
-                //   return 'الرجاء إدخال رقم هاتف سعودي صحيح';
-                // }
                 return null;
               },
             ),

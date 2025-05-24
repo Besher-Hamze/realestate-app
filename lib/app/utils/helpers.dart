@@ -42,49 +42,115 @@ class Helpers {
   }
 
   // Format property type
-  static String formatPropertyType(String propertyType) {
-    switch (propertyType) {
-      case 'apartment':
-        return 'شقة';
-      case 'villa':
-        return 'فيلا';
-      case 'land':
-        return 'أرض';
-      default:
-        return propertyType;
+  static String formatPropertyType(dynamic propertyType) {
+    if (propertyType is int) {
+      switch (propertyType) {
+        case 1:
+          return 'شقة';
+        case 2:
+          return 'فيلا';
+        case 3:
+          return 'أرض';
+        case 4:
+          return 'مكتب';
+        case 5:
+          return 'محل تجاري';
+        default:
+          return 'غير محدد';
+      }
     }
+    
+    // Legacy string support
+    if (propertyType is String) {
+      switch (propertyType) {
+        case 'apartment':
+          return 'شقة';
+        case 'villa':
+          return 'فيلا';
+        case 'land':
+          return 'أرض';
+        default:
+          return propertyType;
+      }
+    }
+    
+    return 'غير محدد';
   }
 
   // Format booking status
-  static String formatBookingStatus(String status) {
-    switch (status) {
-      case 'pending':
-        return 'قيد الانتظار';
-      case 'approved':
-        return 'تمت الموافقة';
-      case 'rejected':
-        return 'مرفوض';
-      case 'completed':
-        return 'مكتمل';
-      default:
-        return status;
+  static String formatBookingStatus(dynamic status) {
+    if (status is int) {
+      switch (status) {
+        case 0:
+          return 'في الانتظار';
+        case 1:
+          return 'موافق عليه';
+        case 2:
+          return 'مرفوض';
+        case 3:
+          return 'ملغي';
+        case 4:
+          return 'مكتمل';
+        default:
+          return 'غير معروف';
+      }
     }
+    
+    // Legacy string support
+    if (status is String) {
+      switch (status) {
+        case 'pending':
+          return 'في الانتظار';
+        case 'approved':
+          return 'موافق عليه';
+        case 'rejected':
+          return 'مرفوض';
+        case 'completed':
+          return 'مكتمل';
+        default:
+          return status;
+      }
+    }
+    
+    return 'غير معروف';
   }
 
   // Get booking status color
-  static Color getBookingStatusColor(String status) {
-    switch (status) {
-      case 'pending':
-        return Colors.orange;
-      case 'approved':
-        return Colors.green;
-      case 'rejected':
-        return Colors.red;
-      case 'completed':
-        return Colors.blue;
-      default:
-        return Colors.grey;
+  static Color getBookingStatusColor(dynamic status) {
+    if (status is int) {
+      switch (status) {
+        case 0:
+          return Colors.orange;
+        case 1:
+          return Colors.green;
+        case 2:
+          return Colors.red;
+        case 3:
+          return Colors.grey;
+        case 4:
+          return Colors.blue;
+        default:
+          return Colors.grey;
+      }
     }
+    
+    // Legacy string support
+    if (status is String) {
+      switch (status) {
+        case 'pending':
+          return Colors.orange;
+        case 'approved':
+          return Colors.green;
+        case 'rejected':
+          return Colors.red;
+        case 'completed':
+          return Colors.blue;
+        default:
+          return Colors.grey;
+      }
+    }
+    
+    return Colors.grey;
   }
 
   // Show success snackbar

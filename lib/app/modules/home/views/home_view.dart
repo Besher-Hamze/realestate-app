@@ -32,7 +32,31 @@ class HomeView extends GetView<HomeController> {
         ],
       ),
       drawer: _buildDrawer(),
-      body: Obx(
+      floatingActionButton: GetBuilder<HomeController>(
+      builder: (controller) {
+        if (!controller.isLoggedIn()) {
+          return const SizedBox.shrink();
+        }
+        
+        return FloatingActionButton.extended(
+          onPressed: () => controller.navigateToCreateProperty(),
+          backgroundColor: AppTheme.primaryColor,
+          foregroundColor: Colors.white,
+          elevation: 8,
+          icon: const Icon(Icons.add_home_rounded, size: 24),
+          label: const Text(
+            'إضافة عقار',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          heroTag: "addProperty",
+        );
+      },
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    body: Obx(
             () => controller.isLoading.value
             ? const Center(
           child: CircularProgressIndicator(
@@ -448,6 +472,16 @@ class HomeView extends GetView<HomeController> {
               onTap: () {
                 Get.back();
                 controller.navigateToBookings();
+              },
+            ),
+
+            _buildDrawerItem(
+              icon: Icons.add_home_rounded,
+              title: 'إضافة عقار',
+              isPrimary: true,
+              onTap: () {
+                Get.back();
+                controller.navigateToCreateProperty();
               },
             ),
 

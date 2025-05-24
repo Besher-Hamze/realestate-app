@@ -28,7 +28,7 @@ class BookingRepository {
   }
 
   Future<BookingListResponse> getUserBookings({
-    String? status,
+    int? status,
     int page = 1,
     int pageSize = 10,
   }) async {

@@ -4,6 +4,8 @@ import 'package:real_estate_app/app/utils/helpers.dart';
 import 'package:real_estate_app/app/utils/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../../../utils/constants.dart';
+
 class PropertyCard extends StatelessWidget {
   final PropertyModel property;
   final VoidCallback onTap;
@@ -44,7 +46,7 @@ class PropertyCard extends StatelessWidget {
                   AspectRatio(
                     aspectRatio: 16 / 9,
                     child: CachedNetworkImage(
-                      imageUrl: property.mainImageUrl,
+                      imageUrl: "${Constants.baseUrl}/${property.mainImageUrl}",
                       fit: BoxFit.cover,
                       width: double.infinity,
                       placeholder: (context, url) => Container(
@@ -351,14 +353,20 @@ class PropertyCard extends StatelessWidget {
     IconData iconData;
 
     switch (property.propertyType) {
-      case 'apartment':
+      case 1:
         iconData = Icons.apartment_rounded;
         break;
-      case 'villa':
+      case 2:
         iconData = Icons.home_rounded;
         break;
-      case 'land':
+      case 3:
         iconData = Icons.landscape_rounded;
+        break;
+      case 4:
+        iconData = Icons.business_rounded;
+        break;
+      case 5:
+        iconData = Icons.store_rounded;
         break;
       default:
         iconData = Icons.home_work_rounded;

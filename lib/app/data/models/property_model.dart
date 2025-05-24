@@ -6,16 +6,19 @@ class PropertyModel {
   final double area;
   final int bedrooms;
   final int bathrooms;
-  final String propertyType;
+  final int propertyType;
   final String location;
   final String? address;
   final double latitude;
   final double longitude;
   final String mainImageUrl;
-  final bool isAvailable;
+  final bool isForRent;
+  final bool isForSale;
+  final int? rentalDurationMonths;
+  final DateTime? rentalEndDate;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final List<PropertyFeature>? features;
+  final List<String>? features;
   final List<PropertyImage>? images;
   final PropertyOwner? owner;
 
@@ -33,13 +36,18 @@ class PropertyModel {
     required this.latitude,
     required this.longitude,
     required this.mainImageUrl,
-    required this.isAvailable,
+    required this.isForRent,
+    required this.isForSale,
+    this.rentalDurationMonths,
+    this.rentalEndDate,
     required this.createdAt,
     this.updatedAt,
     this.features,
     this.images,
     this.owner,
   });
+
+  bool get isAvailable => isForRent || isForSale;
 
   factory PropertyModel.fromJson(Map<String, dynamic> json) {
     print(json);
@@ -71,8 +79,10 @@ class PropertyModel {
           : (json['bathrooms'] is double
           ? json['bathrooms'].toInt()
           : int.parse(json['bathrooms'].toString())),
-      // Convert propertyType to String
-      propertyType: json['propertyType'].toString(),
+      // PropertyType as int
+      propertyType: json['propertyType'] is int
+          ? json['propertyType']
+          : int.parse(json['propertyType'].toString()),
       location: json['location'],
       address: json['address'],
       // Handle multiple types for latitude
@@ -88,11 +98,16 @@ class PropertyModel {
           ? (json['longitude'] as int).toDouble()
           : double.parse(json['longitude'].toString())),
       mainImageUrl: json['mainImageUrl'],
-      isAvailable: json['isAvailable'],
+      isForRent: json['isForRent'] ?? false,
+      isForSale: json['isForSale'] ?? false,
+      rentalDurationMonths: json['rentalDurationMonths'],
+      rentalEndDate: json['rentalEndDate'] != null 
+          ? DateTime.parse(json['rentalEndDate']) 
+          : null,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       features: json['features'] != null
-          ? (json['features'] as List).map((e) => e.toString()).map((e) => PropertyFeature(name: e)).toList()
+          ? (json['features'] as List).map((e) => e.toString()).toList()
           : null,
       images: json['images'] != null
           ? (json['images'] as List).map((e) => PropertyImage.fromJson(e)).toList()
@@ -120,7 +135,9 @@ class PropertyModel {
           : double.parse(json['area'].toString())),
       bedrooms: json['bedrooms'] is int ? json['bedrooms'] : int.parse(json['bedrooms'].toString()),
       bathrooms: json['bathrooms'] is int ? json['bathrooms'] : int.parse(json['bathrooms'].toString()),
-      propertyType: json['propertyType'].toString(),
+      propertyType: json['propertyType'] is int
+          ? json['propertyType']
+          : int.parse(json['propertyType'].toString()),
       location: json['location'],
       latitude: json['latitude'] == null
           ? 0.0
@@ -137,7 +154,8 @@ class PropertyModel {
           ? (json['longitude'] as int).toDouble()
           : double.parse(json['longitude'].toString()))),
       mainImageUrl: json['mainImageUrl'],
-      isAvailable: json['isAvailable'],
+      isForRent: json['isForRent'] ?? false,
+      isForSale: json['isForSale'] ?? false,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: null,
     );
@@ -156,11 +174,14 @@ class PropertyModel {
     data['latitude'] = latitude;
     data['longitude'] = longitude;
     data['mainImageUrl'] = mainImageUrl;
-    data['isAvailable'] = isAvailable;
+    data['isForRent'] = isForRent;
+    data['isForSale'] = isForSale;
+    if (rentalDurationMonths != null) data['rentalDurationMonths'] = rentalDurationMonths;
+    if (rentalEndDate != null) data['rentalEndDate'] = rentalEndDate!.toIso8601String();
     data['createdAt'] = createdAt.toIso8601String();
     if (updatedAt != null) data['updatedAt'] = updatedAt!.toIso8601String();
     if (features != null) {
-      data['features'] = features!.map((e) => e.name).toList();
+      data['features'] = features;
     }
     if (images != null) {
       data['images'] = images!.map((e) => e.toJson()).toList();
@@ -200,13 +221,7 @@ class PropertyImage {
   }
 }
 
-class PropertyFeature {
-  final String name;
 
-  PropertyFeature({
-    required this.name,
-  });
-}
 
 class PropertyOwner {
   final String id;
@@ -275,9 +290,12 @@ class PropertyFilter {
   String? sortDirection;
   int? minPrice;
   int? maxPrice;
-  String? propertyType;
+  int? propertyType;
   int? bedrooms;
   String? location;
+  bool? isForRent;
+  bool? isForSale;
+  String? query;
 
   PropertyFilter({
     this.page = 1,
@@ -289,6 +307,9 @@ class PropertyFilter {
     this.propertyType,
     this.bedrooms,
     this.location,
+    this.isForRent,
+    this.isForSale,
+    this.query,
   });
 
   Map<String, dynamic> toJson() {
@@ -302,6 +323,9 @@ class PropertyFilter {
     if (propertyType != null) data['propertyType'] = propertyType;
     if (bedrooms != null) data['bedrooms'] = bedrooms;
     if (location != null) data['location'] = location;
+    if (isForRent != null) data['isForRent'] = isForRent;
+    if (isForSale != null) data['isForSale'] = isForSale;
+    if (query != null) data['query'] = query;
     return data;
   }
 
@@ -312,9 +336,12 @@ class PropertyFilter {
     String? sortDirection,
     int? minPrice,
     int? maxPrice,
-    String? propertyType,
+    int? propertyType,
     int? bedrooms,
     String? location,
+    bool? isForRent,
+    bool? isForSale,
+    String? query,
   }) {
     return PropertyFilter(
       page: page ?? this.page,
@@ -326,6 +353,9 @@ class PropertyFilter {
       propertyType: propertyType ?? this.propertyType,
       bedrooms: bedrooms ?? this.bedrooms,
       location: location ?? this.location,
+      isForRent: isForRent ?? this.isForRent,
+      isForSale: isForSale ?? this.isForSale,
+      query: query ?? this.query,
     );
   }
 }

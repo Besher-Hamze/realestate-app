@@ -38,7 +38,10 @@ class FavoriteProperty {
   final int bedrooms;
   final double area;
   final String mainImageUrl;
-  final bool isAvailable;
+  final bool isForRent;
+  final bool isForSale;
+
+  bool get isAvailable => isForRent || isForSale;
 
   FavoriteProperty({
     required this.title,
@@ -47,7 +50,8 @@ class FavoriteProperty {
     required this.bedrooms,
     required this.area,
     required this.mainImageUrl,
-    required this.isAvailable,
+    required this.isForRent,
+    required this.isForSale,
   });
 
   factory FavoriteProperty.fromJson(Map<String, dynamic> json) {
@@ -73,7 +77,8 @@ class FavoriteProperty {
           ? (json['area'] as int).toDouble()
           : double.parse(json['area'].toString())),
       mainImageUrl: json['mainImageUrl'],
-      isAvailable: json['isAvailable'],
+      isForRent: json['isForRent'] ?? false,
+      isForSale: json['isForSale'] ?? false,
     );
   }
 
@@ -85,7 +90,8 @@ class FavoriteProperty {
     data['bedrooms'] = bedrooms;
     data['area'] = area;
     data['mainImageUrl'] = mainImageUrl;
-    data['isAvailable'] = isAvailable;
+    data['isForRent'] = isForRent;
+    data['isForSale'] = isForSale;
     return data;
   }
 }

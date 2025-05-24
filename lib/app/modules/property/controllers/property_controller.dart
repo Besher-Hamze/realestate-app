@@ -31,7 +31,7 @@ class PropertyController extends GetxController {
   final searchQuery = ''.obs;
 
   // Filter UI controls
-  final selectedPropertyType = Rxn<String>();
+  final selectedPropertyType = Rxn<int>();
   final selectedBedrooms = Rxn<int>();
   final selectedLocation = Rxn<String>();
   final selectedPriceRange = Rxn<Map<String, dynamic>>();

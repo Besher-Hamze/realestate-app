@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:real_estate_app/app/modules/booking/controllers/booking_controller.dart';
 import 'package:real_estate_app/app/routes/app_pages.dart';
+import 'package:real_estate_app/app/utils/constants.dart';
 import 'package:real_estate_app/app/utils/helpers.dart';
 import 'package:real_estate_app/app/utils/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -49,27 +50,33 @@ class BookingListView extends GetView<BookingController> {
               onSelected: (_) => controller.filterByStatus(null),
             ),
             _buildFilterChip(
-              label: 'قيد الانتظار',
-              selected: controller.selectedStatus.value == 'pending',
-              onSelected: (_) => controller.filterByStatus('pending'),
+              label: 'في الانتظار',
+              selected: controller.selectedStatus.value == 0,
+              onSelected: (_) => controller.filterByStatus(0),
               color: Colors.orange,
             ),
             _buildFilterChip(
-              label: 'تمت الموافقة',
-              selected: controller.selectedStatus.value == 'approved',
-              onSelected: (_) => controller.filterByStatus('approved'),
+              label: 'موافق عليه',
+              selected: controller.selectedStatus.value == 1,
+              onSelected: (_) => controller.filterByStatus(1),
               color: Colors.green,
             ),
             _buildFilterChip(
               label: 'مرفوض',
-              selected: controller.selectedStatus.value == 'rejected',
-              onSelected: (_) => controller.filterByStatus('rejected'),
+              selected: controller.selectedStatus.value == 2,
+              onSelected: (_) => controller.filterByStatus(2),
               color: Colors.red,
             ),
             _buildFilterChip(
+              label: 'ملغي',
+              selected: controller.selectedStatus.value == 3,
+              onSelected: (_) => controller.filterByStatus(3),
+              color: Colors.grey,
+            ),
+            _buildFilterChip(
               label: 'مكتمل',
-              selected: controller.selectedStatus.value == 'completed',
-              onSelected: (_) => controller.filterByStatus('completed'),
+              selected: controller.selectedStatus.value == 4,
+              onSelected: (_) => controller.filterByStatus(4),
               color: Colors.blue,
             ),
           ],
@@ -181,7 +188,7 @@ class BookingListView extends GetView<BookingController> {
 
           // Property info
           InkWell(
-            onTap: () => booking.property != null
+            onTap: () => booking.propertyId != null
                 ? Get.toNamed(Routes.PROPERTY_DETAIL.replaceAll(':id', booking.propertyId))
                 : null,
             child: Padding(
@@ -197,7 +204,7 @@ class BookingListView extends GetView<BookingController> {
                         width: 80,
                         height: 80,
                         child: CachedNetworkImage(
-                          imageUrl: booking.property!.mainImageUrl,
+                          imageUrl: "${Constants.baseUrl}/${booking.property!.mainImageUrl}",
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
                             color: Colors.grey[300],
@@ -365,7 +372,7 @@ class BookingListView extends GetView<BookingController> {
                 ],
 
                 // Actions
-                if (booking.status == 'pending')
+                if (booking.status == 0)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

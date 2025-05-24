@@ -1,19 +1,30 @@
 class Constants {
   // API
-  static const String baseUrl = 'http://192.168.74.10:5267'; // Replace with actual API URL
+  static const String baseUrl = 'http://192.168.74.4:5268'; // Keep as is unless your server changes
 
   // Storage Keys
   static const String tokenKey = 'token';
   static const String refreshTokenKey = 'refreshToken';
   static const String userIdKey = 'userId';
-  static const String usernameKey = 'username';
   static const String userProfileKey = 'userProfile';
 
-  // Property Types
-  static const List<String> propertyTypes = ['apartment', 'villa', 'land'];
+  // Property Types (integers to match API)
+  static const Map<int, String> propertyTypes = {
+    1: 'شقة',
+    2: 'فيلا',
+    3: 'أرض',
+    4: 'مكتب',
+    5: 'محل تجاري',
+  };
 
-  // Booking Status
-  static const List<String> bookingStatus = ['pending', 'approved', 'rejected', 'completed'];
+  // Booking Status (integers to match API)
+  static const Map<int, String> bookingStatus = {
+    0: 'في الانتظار',
+    1: 'موافق عليه',
+    2: 'مرفوض',
+    3: 'ملغي',
+    4: 'مكتمل',
+  };
 
   // Sort Options
   static const Map<String, String> sortOptions = {
@@ -36,32 +47,32 @@ class Constants {
     'مسبح',
     'مصعد',
     'انترنت',
-    'غرفة غسيل'
+    'غرفة غسيل',
   ];
 
-  // Locations (Cities)
+  // Locations (Cities in Syria)
   static const List<String> cities = [
-    'الرياض',
-    'جدة',
-    'مكة',
-    'المدينة',
-    'الدمام',
-    'الخبر',
-    'تبوك',
-    'أبها',
-    'حائل',
-    'نجران'
+    'دمشق',
+    'حلب',
+    'حمص',
+    'اللاذقية',
+    'طرطوس',
+    'حماة',
+    'دير الزور',
+    'الرقة',
+    'إدلب',
+    'السويداء',
   ];
 
-  // Price Ranges
+  // Price Ranges (in Syrian Pound, SYP)
   static const List<Map<String, dynamic>> priceRanges = [
-    {'min': 0, 'max': 100000, 'label': 'أقل من 100,000'},
-    {'min': 100000, 'max': 300000, 'label': '100,000 - 300,000'},
-    {'min': 300000, 'max': 500000, 'label': '300,000 - 500,000'},
-    {'min': 500000, 'max': 750000, 'label': '500,000 - 750,000'},
-    {'min': 750000, 'max': 1000000, 'label': '750,000 - 1,000,000'},
-    {'min': 1000000, 'max': 2000000, 'label': '1,000,000 - 2,000,000'},
-    {'min': 2000000, 'max': -1, 'label': 'أكثر من 2,000,000'},
+    {'min': 0, 'max': 50000000, 'label': 'أقل من 50,000,000 ل.س'},
+    {'min': 50000000, 'max': 100000000, 'label': '50,000,000 - 100,000,000 ل.س'},
+    {'min': 100000000, 'max': 200000000, 'label': '100,000,000 - 200,000,000 ل.س'},
+    {'min': 200000000, 'max': 300000000, 'label': '200,000,000 - 300,000,000 ل.س'},
+    {'min': 300000000, 'max': 500000000, 'label': '300,000,000 - 500,000,000 ل.س'},
+    {'min': 500000000, 'max': 1000000000, 'label': '500,000,000 - 1,000,000,000 ل.س'},
+    {'min': 1000000000, 'max': -1, 'label': 'أكثر من 1,000,000,000 ل.س'},
   ];
 
   // Area Ranges

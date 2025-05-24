@@ -96,14 +96,14 @@ class AuthController extends GetxController {
       loginErrorMessage.value = '';
 
       final request = LoginRequest(
-        email: emailController.text.trim(),
+        phoneNumber: phoneController.text.trim(),
         password: passwordController.text,
       );
 
       final response = await _authRepository.login(request);
 
       // Clear form fields
-      emailController.clear();
+      phoneController.clear();
       passwordController.clear();
 
       // Get user profile
@@ -114,7 +114,7 @@ class AuthController extends GetxController {
 
       Helpers.showSuccessSnackbar(
         'تم تسجيل الدخول',
-        'مرحبًا ${response.username}',
+        'مرحبًا بك',
       );
     } catch (e) {
       loginErrorMessage.value = e.toString();
@@ -141,22 +141,21 @@ class AuthController extends GetxController {
       registerErrorMessage.value = '';
 
       final request = RegisterRequest(
-        username: usernameController.text.trim(),
-        email: emailController.text.trim(),
-        password: passwordController.text,
-        phoneNumber: phoneController.text.trim(),
         fullName: fullNameController.text.trim(),
+        phoneNumber: phoneController.text.trim(),
+        password: passwordController.text,
+        confirmPassword: confirmPasswordController.text,
+        email: emailController.text.trim(),
       );
 
       final response = await _authRepository.register(request);
 
       // Clear form fields
-      usernameController.clear();
+      fullNameController.clear();
       emailController.clear();
       passwordController.clear();
       confirmPasswordController.clear();
       phoneController.clear();
-      fullNameController.clear();
 
       // Navigate to login page
       Get.offNamed(Routes.LOGIN);

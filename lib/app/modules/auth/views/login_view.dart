@@ -74,21 +74,21 @@ class LoginView extends GetView<AuthController> {
                 : const SizedBox.shrink(),
             ),
 
-            // Email Field
+            // Phone Number Field
             TextFormField(
-              controller: controller.emailController,
-              keyboardType: TextInputType.emailAddress,
+              controller: controller.phoneController,
+              keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
-                labelText: 'البريد الإلكتروني',
-                hintText: 'أدخل بريدك الإلكتروني',
-                prefixIcon: Icon(Icons.email_outlined),
+                labelText: 'رقم الهاتف',
+                hintText: 'أدخل رقم هاتفك',
+                prefixIcon: Icon(Icons.phone_outlined),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'الرجاء إدخال البريد الإلكتروني';
+                  return 'الرجاء إدخال رقم الهاتف';
                 }
-                if (!GetUtils.isEmail(value)) {
-                  return 'الرجاء إدخال بريد إلكتروني صحيح';
+                if (value.length < 10) {
+                  return 'رقم الهاتف يجب أن يكون 10 أرقام على الأقل';
                 }
                 return null;
               },

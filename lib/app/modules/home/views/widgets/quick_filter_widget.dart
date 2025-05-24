@@ -92,12 +92,12 @@ class QuickFilterWidget extends GetView<HomeController> {
                     selected: controller.selectedPropertyType.value == null,
                     onSelected: (_) => controller.selectedPropertyType.value = null,
                   ),
-                  ...Constants.propertyTypes.map((type) {
+                  ...Constants.propertyTypes.entries.map((entry) {
                     return _buildFilterChip(
-                      label: _getPropertyTypeLabel(type),
-                      selected: controller.selectedPropertyType.value == type,
-                      onSelected: (_) => controller.selectedPropertyType.value = type,
-                      icon: _getPropertyTypeIcon(type),
+                      label: entry.value,
+                      selected: controller.selectedPropertyType.value == entry.key,
+                      onSelected: (_) => controller.selectedPropertyType.value = entry.key,
+                      icon: _getPropertyTypeIcon(entry.key),
                     );
                   }),
                 ],
@@ -259,27 +259,18 @@ class QuickFilterWidget extends GetView<HomeController> {
     );
   }
 
-  String _getPropertyTypeLabel(String type) {
+  IconData _getPropertyTypeIcon(int type) {
     switch (type) {
-      case 'apartment':
-        return 'شقة';
-      case 'villa':
-        return 'فيلا';
-      case 'land':
-        return 'أرض';
-      default:
-        return type;
-    }
-  }
-
-  IconData _getPropertyTypeIcon(String type) {
-    switch (type) {
-      case 'apartment':
+      case 1:
         return Icons.apartment_rounded;
-      case 'villa':
+      case 2:
         return Icons.home_rounded;
-      case 'land':
+      case 3:
         return Icons.landscape_rounded;
+      case 4:
+        return Icons.business_rounded;
+      case 5:
+        return Icons.store_rounded;
       default:
         return Icons.home_work_rounded;
     }

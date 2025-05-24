@@ -19,9 +19,10 @@ class BookingController extends GetxController {
 
   // Booking request
   final requestDate = DateTime.now().add(const Duration(days: 1)).obs;
+  final visitDateTime = DateTime.now().add(const Duration(days: 1, hours: 2)).obs;
 
   // Selected status filter
-  final selectedStatus = Rxn<String>();
+  final selectedStatus = Rxn<int>();
 
   // Pagination
   final totalPages = 0.obs;
@@ -57,7 +58,7 @@ class BookingController extends GetxController {
       isLoading.value = true;
 
       final response = await _bookingRepository.getUserBookings(
-        status: selectedStatus.value,
+        status: selectedStatus.value! + 1,
         page: currentPage.value,
         pageSize: pageSize.value,
       );
@@ -118,6 +119,7 @@ class BookingController extends GetxController {
       final request = CreateBookingRequest(
         propertyId: propertyId,
         requestDate: requestDate.value,
+        visitDateTime: visitDateTime.value,
         message: messageController.text,
         contactPhone: phoneController.text,
       );
@@ -159,7 +161,7 @@ class BookingController extends GetxController {
   }
 
   // Filter bookings by status
-  void filterByStatus(String? status) {
+  void filterByStatus(int? status) {
     selectedStatus.value = status;
     getUserBookings(refresh: true);
   }
@@ -167,5 +169,10 @@ class BookingController extends GetxController {
   // Set booking date
   void setBookingDate(DateTime date) {
     requestDate.value = date;
+  }
+
+  // Set visit date and time
+  void setVisitDateTime(DateTime dateTime) {
+    visitDateTime.value = dateTime;
   }
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart' hide Response,FormData;
 import 'package:get_storage/get_storage.dart';
 import 'package:real_estate_app/app/utils/constants.dart';
 
@@ -14,7 +14,7 @@ class ApiProvider {
   ApiProvider() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: Constants.baseUrl,
+        baseUrl: "http://192.168.74.4:5268",
         connectTimeout: const Duration(seconds: 20),
         receiveTimeout: const Duration(seconds: 20),
         contentType: Headers.jsonContentType,
@@ -34,6 +34,12 @@ class ApiProvider {
     };
     _initializeInterceptors();
   }
+
+  // Getter to access Dio instance directly for FormData uploads
+  Dio get dio => _dio;
+
+  // Getter to access auth token
+  String? get authToken => storage.read('token');
 
   void _initializeInterceptors() {
     _dio.interceptors.add(
@@ -123,24 +129,29 @@ class ApiProvider {
     }
   }
 
-  Future<Response> post(String path, {dynamic data}) async {
+  // Updated post method with options parameter support
+  Future<Response> post(String path, {dynamic data, Options? options}) async {
     try {
       print('📤 REQUEST URL: ${_dio.options.baseUrl}$path');
       print('📤 REQUEST BODY: $data');
 
-      // Try first with standard JSON content type
+      // Use provided options or create default ones
+      final requestOptions = options ?? Options(
+        contentType: Headers.jsonContentType,
+        headers: {'Accept': 'application/json'},
+      );
+
+      // Try first with provided or standard JSON content type
       var response = await _dio.post(
         path,
         data: data,
-        options: Options(
-          contentType: Headers.jsonContentType,
-          headers: {'Accept': 'application/json'},
-        ),
+        options: requestOptions,
       );
 
-      // If we get empty response, try with different content types
+      // If we get empty response, try with different content types (only for non-FormData)
       if ((response.data == null || (response.data is String && response.data.isEmpty)) &&
-          (response.statusCode == 200 || response.statusCode == 201)) {
+          (response.statusCode == 200 || response.statusCode == 201) &&
+          data is! FormData) {
 
         print('⚠️ Empty response detected, trying with different content type');
 
@@ -197,21 +208,85 @@ class ApiProvider {
     }
   }
 
-  Future<Response> put(String path, {dynamic data}) async {
+  Future<Response> put(String path, {dynamic data, Options? options}) async {
     try {
-      return await _dio.put(path, data: data);
+      return await _dio.put(
+        path,
+        data: data,
+        options: options ?? Options(contentType: Headers.jsonContentType),
+      );
     } on DioException catch (e) {
       throw _handleError(e);
     }
   }
 
-  Future<Response> delete(String path, {dynamic data}) async {
+  Future<Response> delete(String path, {dynamic data, Options? options}) async {
     try {
-      return await _dio.delete(path, data: data);
+      return await _dio.delete(
+        path,
+        data: data,
+        options: options ?? Options(contentType: Headers.jsonContentType),
+      );
     } on DioException catch (e) {
       throw _handleError(e);
     }
   }
+
+  // NEW METHOD: For uploading files with progress tracking
+  Future<Response> uploadFile(
+      String path, {
+        required FormData data,
+        ProgressCallback? onSendProgress,
+        ProgressCallback? onReceiveProgress,
+      }) async {
+    try {
+      print('📤 UPLOADING FILE TO: ${_dio.options.baseUrl}$path');
+
+      final token = storage.read('token');
+      final headers = <String, dynamic>{
+        'Accept': 'application/json',
+      };
+
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final response = await _dio.post(
+        path,
+        data: data,
+        options: Options(
+          headers: headers,
+          contentType: 'multipart/form-data',
+        ),
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+
+      print('📥 UPLOAD RESPONSE STATUS: ${response.statusCode}');
+      print('📥 UPLOAD RESPONSE DATA: ${response.data}');
+
+      return response;
+    } on DioException catch (e) {
+      print('❌ UPLOAD ERROR: ${e.type}');
+      print('❌ UPLOAD ERROR MESSAGE: ${e.message}');
+      print('❌ UPLOAD ERROR RESPONSE: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+  // NEW METHOD: Set auth token manually
+  void setAuthToken(String token) {
+    storage.write('token', token);
+  }
+
+  // NEW METHOD: Clear auth token
+  void clearAuthToken() {
+    storage.remove('token');
+    storage.remove('refreshToken');
+  }
+
+  // NEW METHOD: Check if user is authenticated
+  bool get isAuthenticated => storage.read('token') != null;
 
   String _handleError(DioException error) {
     String errorMessage = 'حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا.';

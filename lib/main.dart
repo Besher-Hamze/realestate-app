@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:real_estate_app/app/data/providers/api_provider.dart';
 import 'package:real_estate_app/app/data/repositories/auth_repository.dart';
+import 'package:real_estate_app/app/data/repositories/property_repository.dart';
 import 'package:real_estate_app/app/routes/app_pages.dart';
 import 'package:real_estate_app/app/utils/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -45,6 +46,7 @@ void _initServices() {
   // Register global services
   Get.lazyPut<ApiProvider>(() => ApiProvider(), fenix: true);
   Get.lazyPut<AuthRepository>(() => AuthRepository(), fenix: true);
+  Get.lazyPut<PropertyRepository>(() => PropertyRepository(), fenix: true);
 }
 
 void _configEasyLoading() {
@@ -92,7 +94,12 @@ class MyApp extends StatelessWidget {
   }
 
   String _determineInitialRoute() {
-    final authRepository = Get.find<AuthRepository>();
-    return authRepository.isLoggedIn() ? Routes.HOME : Routes.LOGIN;
+    try {
+      final authRepository = Get.find<AuthRepository>();
+      return authRepository.isLoggedIn() ? Routes.HOME : Routes.LOGIN;
+    } catch (e) {
+      // If AuthRepository is not initialized yet, default to home
+      return Routes.HOME;
+    }
   }
 }

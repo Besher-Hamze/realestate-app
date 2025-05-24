@@ -11,7 +11,9 @@ import 'package:real_estate_app/app/modules/home/views/home_view.dart';
 import 'package:real_estate_app/app/modules/profile/bindings/profile_binding.dart';
 import 'package:real_estate_app/app/modules/profile/views/change_password_view.dart';
 import 'package:real_estate_app/app/modules/profile/views/profile_view.dart';
+import 'package:real_estate_app/app/modules/property/bindings/create_property_binding.dart';
 import 'package:real_estate_app/app/modules/property/bindings/property_binding.dart';
+import 'package:real_estate_app/app/modules/property/views/create_property_view.dart';
 import 'package:real_estate_app/app/modules/property/views/property_detail_view.dart';
 import 'package:real_estate_app/app/modules/property/views/property_list_view.dart';
 import 'package:real_estate_app/app/modules/property/views/property_search_view.dart';
@@ -52,6 +54,11 @@ class AppPages {
       binding: PropertyBinding(),
     ),
     GetPage(
+      name: Routes.CREATE_PROPERTY,
+      page: () => const CreatePropertyView(),
+      binding: CreatePropertyBinding(),
+    ),
+    GetPage(
       name: Routes.BOOKING_LIST,
       page: () => const BookingListView(),
       binding: BookingBinding(),
@@ -81,6 +88,7 @@ abstract class Routes {
   static const PROPERTY_LIST = '/properties';
   static const PROPERTY_DETAIL = '/properties/:id';
   static const PROPERTY_SEARCH = '/search';
+  static const CREATE_PROPERTY = '/create-property';
   static const BOOKING_LIST = '/bookings';
   static const PROFILE = '/profile';
   static const CHANGE_PASSWORD = '/change-password';
