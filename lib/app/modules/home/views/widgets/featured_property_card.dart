@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate_app/app/data/models/property_model.dart';
+import 'package:real_estate_app/app/utils/constants.dart';
 import 'package:real_estate_app/app/utils/helpers.dart';
 import 'package:real_estate_app/app/utils/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -37,7 +38,7 @@ class FeaturedPropertyCard extends StatelessWidget {
               // Property Image
               Positioned.fill(
                 child: CachedNetworkImage(
-                  imageUrl: property.mainImageUrl,
+                  imageUrl: "${Constants.baseUrl}/${property.mainImageUrl}",
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
                     color: Colors.grey[300],

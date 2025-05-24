@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:real_estate_app/app/modules/favorites/controllers/favorites_controller.dart';
+import 'package:real_estate_app/app/utils/constants.dart';
 import 'package:real_estate_app/app/utils/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:real_estate_app/app/utils/helpers.dart';
@@ -86,7 +87,7 @@ class FavoritesView extends GetView<FavoritesController> {
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
                     child: CachedNetworkImage(
-                      imageUrl: favorite.property.mainImageUrl,
+                      imageUrl: "${Constants.baseUrl}/${favorite.property.mainImageUrl}",
                       fit: BoxFit.cover,
                       width: double.infinity,
                       placeholder: (context, url) => Container(
